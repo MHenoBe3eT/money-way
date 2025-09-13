@@ -13,6 +13,19 @@ import java.util.*
 @Component
 class ParserService {
 
+    private val requestHeaders = mapOf(
+        "User-Agent" to (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+                        "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                        "Chrome/126.0.0.0 Safari/537.36"
+                ),
+        "Accept" to "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language" to "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Connection" to "keep-alive",
+        "Upgrade-Insecure-Requests" to "1",
+        "Referer" to "https://arbworld.net/"
+    )
+
     private val arbWorldFormatter: DateTimeFormatter by lazy {
         DateTimeFormatterBuilder()
             .parseCaseInsensitive()
@@ -25,7 +38,7 @@ class ParserService {
         repeat(3) { attempt ->
             runCatching {
                 return Jsoup.connect(url)
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
+                    .headers(requestHeaders)
                     .timeout(20_000)
                     .get()
             }.onFailure {

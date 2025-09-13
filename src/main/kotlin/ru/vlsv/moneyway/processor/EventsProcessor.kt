@@ -74,7 +74,15 @@ class EventsProcessor(
         val events =
             parser.parseEvents("https://arbworld.net/ru/padayushchiye-koeffitsiyenty/football-1-x-2?hidden=&shown=&timeZone=%2B03%3A00&refreshInterval=60&order=Drop&min=0&max=100&day=Today")
 
-        val eventsToSend = events.filter { it.drawAmount != null && it.drawAmount < 2.6 }
+        val eventsToSend = events.filter { event ->
+            val passesFilter = event.drawAmount != null && event.drawAmount < 2.6
+
+            val notSent = sentEventsCache.getIfPresent(event) == null
+            if (passesFilter && notSent) {
+                sentEventsCache.put(event, true)
+            }
+            passesFilter && notSent
+        }
 
         val message = eventsToSend.joinToString("\n\n") { event ->
             """
@@ -108,5 +116,4 @@ class EventsProcessor(
             passesFilter && notSent
         }
     }
-
 }
