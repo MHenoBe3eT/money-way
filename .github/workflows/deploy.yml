@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -16,16 +19,27 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
           script: |
-            if [ ! -d "/home/deploy/money-way" ]; then
-              git clone https://github.com/OWNER/REPO.git /home/deploy/money-way
-            fi
+            # --- 1️⃣ Создаём папку проекта, если её нет
+            mkdir -p /home/deploy/money-way
             cd /home/deploy/money-way
-            git pull
+            git config --global --add safe.directory /home/deploy/money-way
+
+            # --- 2️⃣ Клонируем репо, если папка пуста, иначе обновляем
+            if [ ! -d ".git" ]; then
+              git clone https://github.com/OWNER/REPO.git .
+            else
+              git pull
+            fi
+
+            # --- 3️⃣ Сборка проекта
             chmod +x gradlew
             ./gradlew build -x test
 
+            # --- 4️⃣ Создаём симлинк на последний JAR
             LATEST_JAR=$(ls -1t build/libs/*.jar | head -n1)
             ln -sf "$LATEST_JAR" app.jar
 
+            # --- 5️⃣ Перезапуск systemd сервиса
             sudo systemctl daemon-reload
             sudo systemctl restart money-way.service
+            sudo systemctl status money-way.service --no-pager
