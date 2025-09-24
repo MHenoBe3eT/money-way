@@ -10,6 +10,10 @@ import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoField
 import java.util.*
 
+/**
+ * Сервисный класс для парсера.
+ * Форматирует, парсит из строки и тд.
+ */
 @Component
 class ParserService {
 

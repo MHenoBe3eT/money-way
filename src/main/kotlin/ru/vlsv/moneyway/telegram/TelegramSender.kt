@@ -5,12 +5,15 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 
+/**
+ * Отправляет сообщение нужному получателю или в группу.
+ */
 @Component
 class TelegramSender(
     @Value("\${telegram.token}") private val token: String,
     @Value("\${telegram.chat-id}") private val chatId: String
 ) {
-    private val log = LoggerFactory.getLogger(javaClass)
+    private val log = LoggerFactory.getLogger(this::class.java)
     private val restTemplate = RestTemplate()
     private val apiUrl = "https://api.telegram.org/bot$token/sendMessage"
 

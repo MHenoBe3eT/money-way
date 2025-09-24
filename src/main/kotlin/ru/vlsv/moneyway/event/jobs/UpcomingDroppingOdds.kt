@@ -5,31 +5,28 @@ import ru.vlsv.moneyway.dto.Event
 import ru.vlsv.moneyway.enums.ParserType
 import ru.vlsv.moneyway.event.EventCache
 import ru.vlsv.moneyway.event.EventJob
+import ru.vlsv.moneyway.event.filter.DroppingOddsToDrawEventFilterImpl
 import ru.vlsv.moneyway.event.filter.EventFilter
-import ru.vlsv.moneyway.event.filter.MoneyWayToDrawEventFilterImpl
 import ru.vlsv.moneyway.telegram.TelegramSender
 
-/**
- * Парсит лайв события на предмет прогруза на ничью
- */
 @Component
-class LiveMoneyWay1x2(
+class UpcomingDroppingOdds(
     telegramSender: TelegramSender,
     cache: EventCache,
 ) : EventJob(telegramSender, cache) {
-
-    override val parserType = ParserType.MONEYWAY_1X2
-    override val filter: EventFilter = MoneyWayToDrawEventFilterImpl(minAmount = 10_000.0)
-    override val url = "https://arbworld.net/ru/denezhnyye-potoki/football-1-x-2-live"
-    override val title = "Ставка лайв"
+    override val parserType: ParserType = ParserType.DROPPING_ODDS
+    override val filter: EventFilter = DroppingOddsToDrawEventFilterImpl(minOdd = 2.6)
+    override val url: String =
+        "https://arbworld.net/ru/padayushchiye-koeffitsiyenty/football-1-x-2?hidden=&shown=&timeZone=%2B03%3A00&refreshInterval=60&order=Drop&min=0&max=100&day=Today"
+    override val title: String = "Dropping Odds to draw"
 
     override fun formatMessage(events: List<Event>): String {
         return events.joinToString("\n\n") { event ->
             """
-            Ставка лайв
+            Подозрительно низкий коэффициент на ничью
             ${event.league}
             ${event.date} ${event.home} - ${event.away}
-            П1 ${event.homeAmount ?: "-"} X ${event.drawAmount ?: "-"} П2 ${event.awayAmount ?: "-"}
+            X ${event.drawAmount ?: "-"}
             """.trimIndent()
         }
     }
