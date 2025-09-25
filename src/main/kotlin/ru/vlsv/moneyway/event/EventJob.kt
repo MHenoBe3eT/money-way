@@ -5,14 +5,14 @@ import ru.vlsv.moneyway.dto.Event
 import ru.vlsv.moneyway.enums.ParserType
 import ru.vlsv.moneyway.event.filter.EventFilter
 import ru.vlsv.moneyway.parser.ParserManager
-import ru.vlsv.moneyway.telegram.TelegramSender
+import ru.vlsv.moneyway.telegram.TelegramBot
 import java.time.LocalDateTime
 
 /**
  * Абстрактный класс джобы, которая будет парсить данные по определенным параметрам.
  */
 abstract class EventJob(
-    private val telegramSender: TelegramSender,
+    private val telegramBot: TelegramBot,
     private val cache: EventCache
 ) {
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -47,7 +47,7 @@ abstract class EventJob(
          * Если нет, то логгируем отсутствие подходящих событий принтом.
          */
         if (toSend.isNotEmpty()) {
-            telegramSender.send(formatMessage(toSend))
+            telegramBot.sendEventsNotification(formatMessage(toSend))
         } else {
             log.info("Нет подходящих событий для '$title' — ${LocalDateTime.now()}")
         }

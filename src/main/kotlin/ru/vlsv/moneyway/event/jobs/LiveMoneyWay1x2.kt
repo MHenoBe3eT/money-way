@@ -7,16 +7,16 @@ import ru.vlsv.moneyway.event.EventCache
 import ru.vlsv.moneyway.event.EventJob
 import ru.vlsv.moneyway.event.filter.EventFilter
 import ru.vlsv.moneyway.event.filter.MoneyWayToDrawEventFilterImpl
-import ru.vlsv.moneyway.telegram.TelegramSender
+import ru.vlsv.moneyway.telegram.TelegramBot
 
 /**
  * Парсит лайв события на предмет прогруза на ничью
  */
 @Component
 class LiveMoneyWay1x2(
-    telegramSender: TelegramSender,
+    telegramBot: TelegramBot,
     cache: EventCache,
-) : EventJob(telegramSender, cache) {
+) : EventJob(telegramBot, cache) {
 
     override val parserType = ParserType.MONEYWAY_1X2
     override val filter: EventFilter = MoneyWayToDrawEventFilterImpl(minAmount = 10_000.0)

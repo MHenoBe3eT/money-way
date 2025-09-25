@@ -7,13 +7,13 @@ import ru.vlsv.moneyway.event.EventCache
 import ru.vlsv.moneyway.event.EventJob
 import ru.vlsv.moneyway.event.filter.DroppingOddsToDrawEventFilterImpl
 import ru.vlsv.moneyway.event.filter.EventFilter
-import ru.vlsv.moneyway.telegram.TelegramSender
+import ru.vlsv.moneyway.telegram.TelegramBot
 
 @Component
 class UpcomingDroppingOdds(
-    telegramSender: TelegramSender,
+    telegramBot: TelegramBot,
     cache: EventCache,
-) : EventJob(telegramSender, cache) {
+) : EventJob(telegramBot, cache) {
     override val parserType: ParserType = ParserType.DROPPING_ODDS
     override val filter: EventFilter = DroppingOddsToDrawEventFilterImpl(minOdd = 2.6)
     override val url: String =
