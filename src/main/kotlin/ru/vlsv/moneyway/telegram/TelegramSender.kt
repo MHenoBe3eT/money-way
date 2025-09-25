@@ -8,6 +8,7 @@ import org.springframework.web.client.RestTemplate
 /**
  * Отправляет сообщение нужному получателю или в группу.
  */
+@Deprecated("теперь за отправку сообщений будет отвечать TelegramBot")
 @Component
 class TelegramSender(
     @Value("\${telegram.token}") private val token: String,

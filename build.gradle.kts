@@ -38,6 +38,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("org.jsoup:jsoup:1.18.3")
     implementation("com.google.guava:guava:33.4.8-jre")
+    implementation("org.telegram:telegrambots-spring-boot-starter:6.9.7.1")
 }
 
 kotlin {
